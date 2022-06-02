@@ -8,7 +8,6 @@ import re
 from bs4 import BeautifulSoup
 from markdown import markdown
 from sentence_transformers import SentenceTransformer
-
 from scipy.linalg import norm
 
 app = Flask(__name__)
