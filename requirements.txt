@@ -3,8 +3,6 @@ gunicorn
 pandas
 bs4
 markdown
-sys
-time
 sentence_transformers
 scipy
 numpy
