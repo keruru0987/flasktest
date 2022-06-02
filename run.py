@@ -2,12 +2,29 @@
 # @Author : Eric
 import pandas
 from flask import Flask, render_template, request
-
-import data_process
 import settings
 import re
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+
+
+def process_query(query):
+    # 删代码
+    pattern = r'<code>(.*\n)*?</code>'
+    text = re.sub(pattern, '', query)
+    # 删图片
+    pattern2 = r'<img.*?>'
+    text = re.sub(pattern2, '', text)
+    re_query = BeautifulSoup(text, 'html.parser').get_text()
+    return re_query
+
+
+def alter_pic_size(query):
+    # 修改显示图片长度为1000px
+    pattern = r'<img'
+    text = re.sub(pattern, "<img style='width: 1000px'", query)
+    return text
 
 
 class SOSearcher(object):
@@ -44,8 +61,8 @@ class SOSearcher(object):
                 acc_id = ''
                 if row['AcceptedAnswerId'] != '':
                     acc_id = int(row['AcceptedAnswerId'])
-                processed_body_text = data_process.process_query(row['Body'])  # 去掉code，图片的
-                imgsize_fixed_body = data_process.alter_pic_size(row['Body'])  # 调整图片大小后的
+                processed_body_text = process_query(row['Body'])  # 去掉code，图片的
+                imgsize_fixed_body = alter_pic_size(row['Body'])  # 调整图片大小后的
                 tag_str = row['Tags']
                 tag_pattern = r'<.*?>'
                 tags = re.findall(tag_pattern, tag_str)
@@ -85,7 +102,6 @@ def soresult():
     result = SO_Seacher.search()
 
     return render_template("so_results.html", u=result, api=selected_api, query=so_query)
-
 
 
 if __name__ == '__main__':
