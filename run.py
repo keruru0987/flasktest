@@ -11,7 +11,7 @@ from githubissue_search import GIRecommend
 app = Flask(__name__)
 
 
-@app.route('/mainpage', methods=["GET", "POST"])
+@app.route('/', methods=["GET", "POST"])
 def mainpage():
     if request.method == 'GET':
         return render_template("github issue recommender.html")
