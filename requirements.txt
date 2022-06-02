@@ -2,7 +2,4 @@ Flask
 gunicorn
 pandas
 bs4
-markdown
-scipy
-numpy
 sentence_transformers
