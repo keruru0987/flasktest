@@ -90,7 +90,7 @@ def mainpage():
     return render_template("index.html")
 
 
-@app.route("/soresult")
+@app.route("/soresult", methods=["POST"])
 def soresult():
     selected_api = request.form.get("selected_api")
     so_query = request.form.get("so_query")
