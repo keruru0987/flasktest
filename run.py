@@ -1,8 +1,5 @@
 # coding=utf-8
 # @Author : Eric
-import sys
-import time
-
 import numpy
 import pandas
 from flask import Flask, render_template, request
@@ -253,8 +250,7 @@ def score_cos(v1, v2):
 
 
 def score_all(docs, titles, tags_list, so_body_text, so_title_text, so_tags):
-    all_progress = len(docs) * 4  # 进度条
-    count_progress = 0
+
     scores1 = []
     # query = self.word2sentence(sequence)
     v_query_body = model.encode(so_body_text)
@@ -266,13 +262,6 @@ def score_all(docs, titles, tags_list, so_body_text, so_title_text, so_tags):
             scores1.append(score_cos(v_query_body, v_doc))
         else:
             scores1.append(0)
-        count_progress += 1
-        progress = count_progress / all_progress * 100
-        progress = round(progress, 1)
-        print("\r", end="")
-        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
-        sys.stdout.flush()
-        time.sleep(0.00001)
 
     scores2 = []
     v_query_title = model.encode(so_title_text)
@@ -282,13 +271,6 @@ def score_all(docs, titles, tags_list, so_body_text, so_title_text, so_tags):
             scores2.append(score_cos(v_query_title, v_gi_title))
         else:
             scores2.append(0)
-        count_progress += 1
-        progress = count_progress / all_progress * 100
-        progress = round(progress, 1)
-        print("\r", end="")
-        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
-        sys.stdout.flush()
-        time.sleep(0.00001)
 
     tag_counts = []
     for tags in tags_list:
@@ -297,13 +279,6 @@ def score_all(docs, titles, tags_list, so_body_text, so_title_text, so_tags):
             if tag.lower() in so_tags.lower():
                 count += 1
         tag_counts.append(count)
-        count_progress += 1
-        progress = count_progress / all_progress * 100
-        progress = round(progress, 1)
-        print("\r", end="")
-        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
-        sys.stdout.flush()
-        time.sleep(0.00001)
 
     max_tag_count = max(tag_counts)
     # 防止全为0的情况
@@ -319,14 +294,6 @@ def score_all(docs, titles, tags_list, so_body_text, so_title_text, so_tags):
         t = 1  # tag系数
         score = (1 + t * tag_counts[i] / max_tag_count) / (1 + t) * (scores2[i] * k + scores1[i]) / (k + 1)
         scores_final.append(score)
-        count_progress += 1
-        progress = count_progress / all_progress * 100
-        progress = round(progress, 1)
-        print("\r", end="")
-        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
-        sys.stdout.flush()
-        time.sleep(0.00001)
-    print('')
 
     return scores_final
 
