@@ -1,18 +1,16 @@
 # coding=utf-8
 # @Author : Eric
-import numpy
+
 import pandas
 from flask import Flask, render_template, request
 import settings
 import re
 from bs4 import BeautifulSoup
 from markdown import markdown
-from sentence_transformers import SentenceTransformer
-from scipy.linalg import norm
+import math
+
 
 app = Flask(__name__)
-
-model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 def get_title(api=''):
@@ -242,60 +240,65 @@ def girecommend(api, title, body, tags):
     return result_gi
 
 
-def score_cos(v1, v2):
-    if norm(v1) * norm(v2) != 0:
-        return numpy.dot(v1, v2) / (norm(v1) * norm(v2))
-    else:
-        return 0
+def computeTF(vocab, doc):
+    tf = dict.fromkeys(vocab, 0)
+    for word in doc:
+        tf[word] += 1
+    return tf
 
 
-def score_all(docs, titles, tags_list, so_body_text, so_title_text, so_tags):
+def computeIDF(tfList):
+    idfDict = dict.fromkeys(tfList[0], 0)  # 词为key，初始值为0
+    N = len(tfList)  # 总文档数量
+    for tf in tfList:  # 遍历字典中每一篇文章
+        for word, count in tf.items():  # 遍历当前文章的每一个词
+            if count > 0:  # 当前遍历的词语在当前遍历到的文章中出现
+                idfDict[word] += 1  # 包含词项tj的文档的篇数df+1
+    for word, Ni in idfDict.items():  # 利用公式将df替换为逆文档频率idf
+        idfDict[word] = math.log10(N / Ni)  # N,Ni均不会为0
+    return idfDict  # 返回逆文档频率IDF字典
 
-    scores1 = []
-    # query = self.word2sentence(sequence)
-    v_query_body = model.encode(so_body_text)
+
+def computeTFIDF(tf, idfs):  # tf词频,idf逆文档频率
+    tfidf = {}
+    for word, tfval in tf.items():
+        tfidf[word] = tfval * idfs[word]
+    return tfidf
+
+
+def score_all(docs, titles, tags_list, sequence, so_title_text, so_tags):
+    vocab = set([word for doc in docs for word in doc])
+    tf_list = []
     for doc in docs:
-        # 如果doc为空，直接记为0分
-        if len(doc) > 0:
-            # doc_sentence = self.word2sentence(doc)
-            v_doc = model.encode(doc)
-            scores1.append(score_cos(v_query_body, v_doc))
+        tf = computeTF(vocab, doc)
+        tf_list.append(tf)
+
+    idfs = computeIDF(tf_list)
+    tf_idf_list = []
+    for tf in tf_list:
+        tf_idf = computeTFIDF(tf, idfs)
+        tf_idf_list.append(tf_idf)
+
+
+    Dvector = pandas.DataFrame([tfidf for tfidf in tf_idf_list])  # 文档的向量
+
+    query = []
+    for word in sequence:
+        if word in vocab:
+            query.append(word)
         else:
-            scores1.append(0)
+            continue
+    tf = computeTF(vocab, query)
+    Q_tf_idf = computeTFIDF(tf, idfs)  # Query的向量
 
-    scores2 = []
-    v_query_title = model.encode(so_title_text)
-    for title in titles:
-        if len(title) > 0:
-            v_gi_title = model.encode(title)
-            scores2.append(score_cos(v_query_title, v_gi_title))
-        else:
-            scores2.append(0)
-
-    tag_counts = []
-    for tags in tags_list:
-        count = 0
-        for tag in tags:
-            if tag.lower() in so_tags.lower():
-                count += 1
-        tag_counts.append(count)
-
-    max_tag_count = max(tag_counts)
-    # 防止全为0的情况
-    if max_tag_count == 0:
-        max_tag_count = 1
-
-    scores_final = []
-    if len(scores1) != len(scores2):
-        raise Exception('title body num not match')
-    # 计算最终得分
-    for i in range(len(scores1)):
-        k = 1.5  # 标题系数
-        t = 1  # tag系数
-        score = (1 + t * tag_counts[i] / max_tag_count) / (1 + t) * (scores2[i] * k + scores1[i]) / (k + 1)
-        scores_final.append(score)
-
-    return scores_final
+    scores = []
+    for vector in Dvector.to_dict(orient='records'):
+        score = 0
+        for k in Q_tf_idf:
+            if k in vector:
+                score += Q_tf_idf[k] * vector[k]
+        scores.append(score)
+    return scores
 
 
 @app.route("/", methods=["GET", "POST"])
