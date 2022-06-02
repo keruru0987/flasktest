@@ -7,7 +7,6 @@ import pandas as pd
 import data_process
 from bs4 import BeautifulSoup
 from markdown import markdown
-from word2vec import Word2Vec
 from sentence2vec import Sentence2Vec
 
 
