@@ -190,7 +190,7 @@ def find(selected_api, id_str):
     return matched_so
 
 
-def recommend(api, title, body, tags):
+def girecommend(api, title, body, tags):
     docs = get_raw_data(api)
     titles = get_title(api)
     tag_list = get_labels(api)
@@ -276,7 +276,7 @@ def recommend():
     comment_count = matched_so[7]
     tag_list = matched_so[8]
 
-    result = recommend(api, matched_so[0], matched_so[1], matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
+    result = girecommend(api, matched_so[0], matched_so[1], matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
     # for inf in result:
     #     print(inf)
 
