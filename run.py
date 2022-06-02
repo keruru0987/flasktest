@@ -1,9 +1,14 @@
 # coding=utf-8
 # @Author : Eric
-
+import pandas
 from flask import Flask, render_template, request
 
+import data_process
+import settings
+import re
+
 app = Flask(__name__)
+
 
 class SOSearcher(object):
     def __init__(self, selected_api, so_query):
@@ -17,7 +22,7 @@ class SOSearcher(object):
         :return: 包含posts信息的列表，信息分别为链接（用ID进行构造），标题，内容，相关度
         """
         fpath = settings.stackoverflow_filepath[self.api]
-        sodata_df = pd.read_csv(fpath)
+        sodata_df = pandas.read_csv(fpath)
         sodata_df = sodata_df.fillna('')
 
         # selected_df = pd.DataFrame(columns=['ID', 'Title', 'Body'])
