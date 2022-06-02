@@ -1,14 +1,21 @@
 # coding=utf-8
 # @Author : Eric
+import sys
+import time
+
+import numpy
 import pandas
 from flask import Flask, render_template, request
 import settings
 import re
 from bs4 import BeautifulSoup
 from markdown import markdown
-from sentence2vec import Sentence2Vec
+from sentence_transformers import SentenceTransformer
+from scipy.linalg import norm
 
 app = Flask(__name__)
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 def get_title(api=''):
@@ -194,8 +201,7 @@ def girecommend(api, title, body, tags):
     docs = get_raw_data(api)
     titles = get_title(api)
     tag_list = get_labels(api)
-    s2v = Sentence2Vec(docs, titles, tag_list)
-    scores = s2v.score_all(process_query(body), title, tags)
+    scores = score_all(docs, titles, tag_list, process_query(body), title, tags)
     # print(scores)
 
     select_num = settings.select_num
@@ -239,6 +245,92 @@ def girecommend(api, title, body, tags):
     return result_gi
 
 
+def score_cos(v1, v2):
+    if norm(v1) * norm(v2) != 0:
+        return numpy.dot(v1, v2) / (norm(v1) * norm(v2))
+    else:
+        return 0
+
+
+def score_all(docs, titles, tags_list, so_body_text, so_title_text, so_tags):
+    all_progress = len(docs) * 4  # 进度条
+    count_progress = 0
+    scores1 = []
+    # query = self.word2sentence(sequence)
+    v_query_body = model.encode(so_body_text)
+    for doc in docs:
+        # 如果doc为空，直接记为0分
+        if len(doc) > 0:
+            # doc_sentence = self.word2sentence(doc)
+            v_doc = model.encode(doc)
+            scores1.append(score_cos(v_query_body, v_doc))
+        else:
+            scores1.append(0)
+        count_progress += 1
+        progress = count_progress / all_progress * 100
+        progress = round(progress, 1)
+        print("\r", end="")
+        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
+        sys.stdout.flush()
+        time.sleep(0.00001)
+
+    scores2 = []
+    v_query_title = model.encode(so_title_text)
+    for title in titles:
+        if len(title) > 0:
+            v_gi_title = model.encode(title)
+            scores2.append(score_cos(v_query_title, v_gi_title))
+        else:
+            scores2.append(0)
+        count_progress += 1
+        progress = count_progress / all_progress * 100
+        progress = round(progress, 1)
+        print("\r", end="")
+        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
+        sys.stdout.flush()
+        time.sleep(0.00001)
+
+    tag_counts = []
+    for tags in tags_list:
+        count = 0
+        for tag in tags:
+            if tag.lower() in so_tags.lower():
+                count += 1
+        tag_counts.append(count)
+        count_progress += 1
+        progress = count_progress / all_progress * 100
+        progress = round(progress, 1)
+        print("\r", end="")
+        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
+        sys.stdout.flush()
+        time.sleep(0.00001)
+
+    max_tag_count = max(tag_counts)
+    # 防止全为0的情况
+    if max_tag_count == 0:
+        max_tag_count = 1
+
+    scores_final = []
+    if len(scores1) != len(scores2):
+        raise Exception('title body num not match')
+    # 计算最终得分
+    for i in range(len(scores1)):
+        k = 1.5  # 标题系数
+        t = 1  # tag系数
+        score = (1 + t * tag_counts[i] / max_tag_count) / (1 + t) * (scores2[i] * k + scores1[i]) / (k + 1)
+        scores_final.append(score)
+        count_progress += 1
+        progress = count_progress / all_progress * 100
+        progress = round(progress, 1)
+        print("\r", end="")
+        print('进度：{}%'.format(progress), "▋" * (int(round(progress)) // 2), end="")
+        sys.stdout.flush()
+        time.sleep(0.00001)
+    print('')
+
+    return scores_final
+
+
 @app.route("/", methods=["GET", "POST"])
 def mainpage():
     if request.method == 'GET':
@@ -276,7 +368,8 @@ def recommend():
     comment_count = matched_so[7]
     tag_list = matched_so[8]
 
-    result = girecommend(api, matched_so[0], matched_so[1], matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
+    result = girecommend(api, matched_so[0], matched_so[1],
+                         matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
     # for inf in result:
     #     print(inf)
 
