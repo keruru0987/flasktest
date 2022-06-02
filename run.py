@@ -88,7 +88,7 @@ class SOSearcher(object):
 @app.route("/", methods=["GET", "POST"])
 def mainpage():
     if request.method == 'GET':
-        return render_template("github issue recommender.html")
+        return render_template("index.html")
     else:
         selected_api = request.form.get("selected_api")
         so_query = request.form.get("so_query")
