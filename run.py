@@ -14,7 +14,8 @@ app = Flask(__name__)
 @app.route('/', methods=["GET", "POST"])
 def mainpage():
     if request.method == 'GET':
-        return render_template("github issue recommender.html")
+        return render_template("index.html")
+    '''
     else:
         selected_api = request.form.get("selected_api")
         so_query = request.form.get("so_query")
@@ -26,8 +27,9 @@ def mainpage():
         result = SO_Seacher.search()
 
         return render_template("so_results.html", u=result, api=selected_api, query=so_query)
+    '''
 
-
+'''
 @app.route('/recommend')
 def recommend():
     """
@@ -60,7 +62,7 @@ def recommend():
     return render_template('gi_results.html', u=result, img_processed_body=img_processed_body, title=title,
                            acc_id=acc_id, so_id=id, score=score, view_count=view_count, answer_count=answer_count,
                            comment_count=comment_count, tag_list=tag_list, tag_pre_link=label_pre_link)
-
+'''
 
 if __name__ == '__main__':
     app.run()
