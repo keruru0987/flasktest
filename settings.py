@@ -29,10 +29,10 @@ tagged_github_filepath = {'gensim': 'data/tagged_data/gensim.csv', 'allennlp': '
                           'stanford-nlp': 'data/tagged_data/stanford-nlp.csv', 'TextBlob': 'data/tagged_data/TextBlob.csv',
                           'Transformers': 'data/tagged_data/Transformers.csv'}
 
-stackoverflow_filepath = {'gensim':'D:/data/stack/gensim.csv', 'allennlp':'D:/data/stack/allennlp.csv',
-                          'nltk':'D:/data/stack/nltk.csv', 'spaCy':'D:/data/stack/spacy.csv',
-                          'stanford-nlp':'D:/data/stack/stanford-nlp.csv', 'TextBlob':'D:/data/stack/textblob.csv',
-                          'Transformers':'D:/data/stack/transformers.csv'}
+stackoverflow_filepath = {'gensim': 'data/stackoverflow/gensim.csv', 'allennlp': 'data/stackoverflow/allennlp.csv',
+                          'nltk': 'data/stackoverflow/nltk.csv', 'spaCy': 'data/stackoverflow/spacy.csv',
+                          'stanford-nlp': 'data/stackoverflow/stanford-nlp.csv', 'TextBlob': 'data/stackoverflow/textblob.csv',
+                          'Transformers': 'data/stackoverflow/transformers.csv'}
 
 word2vec_modelpath = 'D:/model/GoogleNews-vectors-negative300.bin'
 
