@@ -29,10 +29,26 @@
             height: 800px;
             background-color: lightgrey;
         }
+        .so_body_content{
+            height: 270px;
+        }
+        .gi_body_content{
+            height: 260px
+        }
+
 
         @media screen and (orientation: portrait) {
             .left_area {
                 height: 1500px;
+            }
+            .content{
+                height: 1250px;
+            }
+            .so_body_content{
+                height:540px;
+            }
+            .gi_body_content{
+                height: 520px;
             }
         }
 
@@ -118,7 +134,7 @@
 </div>
 
 <div class="container-fluid clearfix">
-    <div class="col-sm-5 col-lg-4 left_area">
+    <div class="col-sm-4 col-lg-4 left_area">
         <div class="page-header">
             <h3>Recommend Results</h3>
             <span style="color: red; font-size: 20px">Please note: This is the deployment version, due to space limit, VSM is used as algorithm, which is not very accurate</span>
@@ -158,7 +174,7 @@
     </div>
 
     <!--主体右侧-->
-    <div class="col-sm-7 col-lg-8">
+    <div class="col-sm-8 col-lg-8">
         <div style="display: block">
             <div class="page-header" style="margin-bottom: 10px">
                 <span id="accid" style="display: none">{{acc_id}}</span>
@@ -198,7 +214,7 @@
             </span>
         </div>
 
-        <div style="width: 100%; height: 270px; overflow: auto">
+        <div style="width: 100%; overflow: auto" class="so_body_content">
             <p id="so_body_text" style="display: none">
                 {{img_processed_body}}
             </p>
@@ -218,7 +234,7 @@
             <span id="gi_info_area" style="margin-right: 50px; font-size: 18px"></span>
             <span id="gi_tag_area" style="font-size: 18px"></span>
         </div>
-        <div style="width: 100%; height: 260px; overflow: auto;">
+        <div style="width: 100%; overflow: auto;" class="gi_body_content">
             <p id="body_text" style="background-color: #f7ecb5 "></p>
         </div>
 
