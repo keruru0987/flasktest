@@ -5,15 +5,14 @@
     <meta charset="UTF-8">
     <title>Github Issue recommender</title>
     <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.css">
+    <style>
+        .left_area{
+            height:800px;
+            background-color: lightgrey;
+        }
+    </style>
 </head>
 <body>
-
-<script>
-    function showBlog(){
-        document.getElementById("right_area").innerHTML =
-            '<iframe src="http://ericrzhu.com/" frameBorder="0" height="800px" width="1200px"></iframe>'
-    }
-</script>
 
 <div class="col-sm-2 col-lg-1">
     <img src="/static/HIT.png" alt="HIT" style="height: 100px; margin-left: 10px; margin-top: 10px">
@@ -29,7 +28,7 @@
 
 
 <div class="container-fluid clearfix">
-    <div class="col-sm-5 col-lg-4" style="background-color: lightgrey; height: 800px">
+    <div class="col-sm-5 col-lg-4" style="background-color: lightgrey; height:800px; @media orientation:portrait{height:1500px}" >
         <div class="page-header">
             <h3>Search StackOverflow Posts </h3>
         </div>
@@ -61,7 +60,6 @@
     </div>
 
     <div class="col-sm-7 col-lg-8" id="right_area">
-<!--        <iframe src="https://github.com/allenai/allennlp/issues/3237" frameborder="0" height="800px" width="1200px"></iframe>-->
 
     </div>
 
