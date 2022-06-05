@@ -11,9 +11,17 @@
             background-color: lightgrey;
         }
 
+        .text_input{
+            width:262px;
+        }
+
         @media screen and (orientation: portrait) {
             .left_area {
                 height: 1500px;
+            }
+            .text_input{
+                width:auto;
+                margin-top: 10px;
             }
         }
     </style>
@@ -53,8 +61,7 @@
             <div>
                 <div class="form-group">
                     <label>
-                        <input type="text" name="so_query" class="form-control" style="width: 262px"
-                               placeholder="Search">
+                        <input type="text" name="so_query" class="form-control text_input" placeholder="Input your question">
                     </label>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
