@@ -21,7 +21,7 @@
         }
 
         .content {
-            height: calc(100vh - 100px);
+            height: 650px;
             overflow-y: scroll;
         }
 
@@ -30,10 +30,23 @@
             background-color: lightgrey;
         }
 
+        .text_input{
+            width:262px;
+        }
+
         @media screen and (orientation: portrait) {
             .left_area {
                 height: 1500px;
             }
+            .text_input{
+                width:auto;
+                margin-top: 10px;
+            }
+
+            .content{
+                height: 1350px;
+            }
+
         }
 
     </style>
@@ -142,8 +155,7 @@
             <div>
                 <div class="form-group">
                     <label>
-                        <input type="text" name="so_query" class="form-control" style="width: 262px"
-                               placeholder="Search" value='{{query}}'>
+                        <input type="text" name="so_query" class="form-control text_input" placeholder="Search" value='{{query}}'>
                     </label>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
