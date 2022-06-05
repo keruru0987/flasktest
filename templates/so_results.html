@@ -34,6 +34,10 @@
             width:262px;
         }
 
+        .body_content{
+            height: 680px;
+        }
+
         @media screen and (orientation: portrait) {
             .left_area {
                 height: 1500px;
@@ -45,6 +49,10 @@
 
             .content{
                 height: 1250px;
+            }
+
+            .body_content{
+                height: 1200px;
             }
 
         }
@@ -213,7 +221,7 @@
                         <!--通过js修改链接中的参数-->
                         <button type="button" class="btn btn-primary" style="margin-top: 35px"
                                 onclick="goRecommend('{{api}}')">
-                            Recommend GitHub Issue
+                            Recommend
                         </button>
                     </a>
                 </div>
@@ -223,7 +231,7 @@
             <span id="info_area" style="margin-right: 50px; font-size: 18px"></span>
             <span id="tag_area" style="font-size: 18px"></span>
         </div>
-        <div style="width: 100%; height: 680px; overflow: auto">
+        <div class="body_content" style="width: 100%;  overflow: auto">
             <p id="body_text"></p>
         </div>
 
