@@ -21,7 +21,7 @@
         }
 
         .content {
-            height: 650px;
+            height: 595px;
             overflow-y: scroll;
         }
 
@@ -80,14 +80,14 @@
         var tags_spilt = tags.split(' ')
         console.log(tags_spilt)
         var tags_inner = ''
-        for(var i=0; i<tags_spilt.length; i++){
+        for (var i = 0; i < tags_spilt.length; i++) {
             console.log(tag_pre_link)
             console.log(tags_spilt[i])
             var tag_link = tag_pre_link.concat(tags_spilt[i])
             //去掉其中的空格
-            tag_link = tag_link.replace(/\s/ig,'')
+            tag_link = tag_link.replace(/\s/ig, '')
             console.log(tag_link)
-            tags_inner = tags_inner + "<a style='text-decoration: none' href='"+ tag_link +"' target='_blank'>" +
+            tags_inner = tags_inner + "<a style='text-decoration: none' href='" + tag_link + "' target='_blank'>" +
                 "<span style='margin-right: 10px' class='label label-info'>" + tags_spilt[i] + "</span></a>"
         }
         document.getElementById("gi_tag_area").innerHTML = tags_inner
@@ -111,7 +111,8 @@
         <h1><a href="/" style="text-decoration: none; color: #0f0f0f">GitHub Issue Recommender </a><small>by
             eric</small>
             <a href="http://ericrzhu.com/" target="_blank"><small class="clearfix"
-                                                                style="float: right;padding-top: 15px;">about me</small></a>
+                                                                  style="float: right;padding-top: 15px;">about
+                me</small></a>
         </h1>
     </div>
 </div>
@@ -129,43 +130,25 @@
 
             {% for i in u %}
             <span style="display: none" id="gi_link{{i[3]}}">{{i[0]}}</span>
-            <div style="display: none" id="tags{{i[3]}}"> {{i[7]}} </div>
-            <div style="display: none" id="tag_pre_link"> {{tag_pre_link}} </div>
+            <div style="display: none" id="tags{{i[3]}}"> {{i[7]}}</div>
+            <div style="display: none" id="tag_pre_link"> {{tag_pre_link}}</div>
 
-            <div class="col-xs-10">
-                <div class="panel panel-info" style="width: 100%; display: inline-block; cursor: pointer"
-                     id="outerpanel{{i[3]}}" onclick="showMore('{{i[3]}}', '{{i[4]}}', '{{i[6]}}')">
-                    <div class="panel-heading" id="panel{{i[3]}}">
-                        <div class="oneline_ignore"><h3 class="panel-title" id="title{{i[3]}}">{{i[1]}}</h3></div>
 
-                    </div>
-                    <div class="panel-body">
-                        <div class="media">
-                            <div class="media-body" id="body{{i[3]}}">
-                                <div class="twoline_ignore">{{i[2]}}</div>
-                            </div>
+            <div class="panel panel-info" style="width: 95%; display: inline-block; cursor: pointer"
+                 id="outerpanel{{i[3]}}" onclick="showMore('{{i[3]}}', '{{i[4]}}', '{{i[6]}}')">
+                <div class="panel-heading" id="panel{{i[3]}}">
+                    <div class="oneline_ignore"><h3 class="panel-title" id="title{{i[3]}}">{{i[1]}}</h3></div>
+
+                </div>
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-body" id="body{{i[3]}}">
+                            <div class="twoline_ignore">{{i[2]}}</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xs-2">
-                <div style="height: 50px">
-                    <button type="button" class="btn btn-primary" style="width: 65px"
-                            onclick="showMore('{{i[3]}}', '{{i[4]}}', '{{i[6]}}')">
-                        more<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"
-                                  style="margin-left: 3px"></span>
-                    </button>
-                </div>
-                <div style="height: 50px">
-                    <a href={{i[0]}} target="_blank">
-                        <button type="button" class="btn btn-primary" style="width: 65px">
-                            goto<span class="glyphicon glyphicon-link" aria-hidden="true"
-                                      style="margin-left: 3px"></span>
-                        </button>
-                    </a>
-                </div>
-            </div>
 
             {% endfor %}
 
@@ -208,13 +191,14 @@
                 </span>
             <span id="tag_area" style="font-size: 18px">
                 {% for tag in tag_list %}
-                <a style='text-decoration: none' href='https://stackoverflow.com/questions/tagged/{{tag}}' target='_blank'>
+                <a style='text-decoration: none' href='https://stackoverflow.com/questions/tagged/{{tag}}'
+                   target='_blank'>
                     <span style='margin-right: 10px' class='label label-info'>{{tag}}</span></a>
                 {% endfor %}
             </span>
         </div>
 
-        <div style="width: 1200px; height: 270px; overflow: auto">
+        <div style="width: 100%; height: 270px; overflow: auto">
             <p id="so_body_text" style="display: none">
                 {{img_processed_body}}
             </p>
@@ -234,7 +218,7 @@
             <span id="gi_info_area" style="margin-right: 50px; font-size: 18px"></span>
             <span id="gi_tag_area" style="font-size: 18px"></span>
         </div>
-        <div style="width: 1200px; height: 260px; overflow: auto;">
+        <div style="width: 100%; height: 260px; overflow: auto;">
             <p id="body_text" style="background-color: #f7ecb5 "></p>
         </div>
 
