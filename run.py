@@ -447,7 +447,19 @@ def fromallrecommend():
     tag_list = matched_so[8]
     api = ''
     for tag in tag_list:
-        if str(tag).lower()== 'textblob':
+        if str(tag).lower() == 'textblob':
+            api = 'TextBlob'
+        if str(tag).lower() == 'textblob':
+            api = 'TextBlob'
+        if str(tag).lower() == 'textblob':
+            api = 'TextBlob'
+        if str(tag).lower() == 'textblob':
+            api = 'TextBlob'
+        if str(tag).lower() == 'textblob':
+            api = 'TextBlob'
+        if str(tag).lower() == 'textblob':
+            api = 'TextBlob'
+        if str(tag).lower() == 'textblob':
             api = 'TextBlob'
 
     result = girecommend(api, matched_so[0], matched_so[1], matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
