@@ -445,22 +445,24 @@ def fromallrecommend():
     answer_count = matched_so[6]
     comment_count = matched_so[7]
     tag_list = matched_so[8]
+
+    # nlp_api = ['allennlp', 'gensim', 'nltk', 'spaCy', 'stanford-nlp', 'TextBlob', 'Transformers']
     api = ''
     for tag in tag_list:
+        if str(tag).lower() == 'allennlp':
+            api = 'allennlp'
+        if str(tag).lower() == 'gensim':
+            api = 'gensim'
+        if str(tag).lower() == 'nltk':
+            api = 'nltk'
+        if str(tag).lower() == 'spacy':
+            api = 'spaCy'
+        if str(tag).lower() == 'stanford-nlp':
+            api = 'stanford-nlp'
         if str(tag).lower() == 'textblob':
             api = 'TextBlob'
-        if str(tag).lower() == 'textblob':
-            api = 'TextBlob'
-        if str(tag).lower() == 'textblob':
-            api = 'TextBlob'
-        if str(tag).lower() == 'textblob':
-            api = 'TextBlob'
-        if str(tag).lower() == 'textblob':
-            api = 'TextBlob'
-        if str(tag).lower() == 'textblob':
-            api = 'TextBlob'
-        if str(tag).lower() == 'textblob':
-            api = 'TextBlob'
+        if str(tag).lower() == 'transformers':
+            api = 'Transformers'
 
     result = girecommend(api, matched_so[0], matched_so[1], matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
     # for inf in result:
