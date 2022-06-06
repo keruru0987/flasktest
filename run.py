@@ -192,7 +192,84 @@ def find(selected_api, id_str):
     return matched_so
 
 
+def find_fromall(id_str):
+    fpath = 'data/stackoverflow/allso.csv'
+    sodata_df = pandas.read_csv(fpath)
+    sodata_df = sodata_df.fillna('')
+    matched_so = []
+    match_flag = 0
+    for index, row in sodata_df.iterrows():
+        if str(row['Id']) == id_str:
+            acc_id = ''
+            if row['AcceptedAnswerId'] != '':
+                acc_id = int(row['AcceptedAnswerId'])
+            tag_str = row['Tags']
+            tag_pattern = r'<.*?>'
+            tags = re.findall(tag_pattern, tag_str)
+            tag_list = []
+            for tag in tags:
+                tag1 = tag.replace('<', '')
+                tag2 = tag1.replace('>', '')
+                tag_list.append(tag2)
+            matched_so = [row['Title'], row['Body'], row['Tags'], str(acc_id), str(row['Score']),
+                          str(row['ViewCount']), str(row['AnswerCount']), str(row['CommentCount']), tag_list]
+            match_flag = 1
+            break
+    if match_flag == 0:
+        raise Exception('没有匹配的ID')
+    return matched_so
+
+
 def girecommend(api, title, body, tags):
+    docs = get_raw_data(api)
+    titles = get_title(api)
+    tag_list = get_labels(api)
+    scores = score_all(docs, titles, tag_list, process_query(body), title, tags)
+    # print(scores)
+
+    select_num = settings.select_num
+    # sort_re = list(map(scores.index, heapq.nlargest(select_num, scores)))
+    sort_re_all = sorted(range(len(scores)), key=lambda k: scores[k], reverse=True)
+    sort_re = sort_re_all[0:select_num]
+    # print(sort_re)
+    fpath = settings.new_github_filepath[api]
+    gi_df = pandas.read_csv(fpath)
+    gi_df = gi_df.fillna('')
+
+    tags = get_labels(api)
+
+    result_gi = []
+    for index in sort_re:
+        link = settings.api_prelink[api] + str(gi_df.loc[index]['number'])
+        state = ''
+        if gi_df.loc[index]['state'] == 'open':
+            state = '1'
+        clean_body = gi_df.loc[index]['body']
+        # 消除代码块
+        pattern = r'```(.*\n)*```'
+        clean_body = re.sub(pattern, '', clean_body)
+        # 消除命令行指令
+        pattern2 = r'> > > .*'
+        clean_body = re.sub(pattern2, '', clean_body)
+        # 消除报错 一般两行
+        pattern3 = r'File .*\n.*'
+        clean_body = re.sub(pattern3, '', clean_body)
+        html = markdown(clean_body)
+        clean_body = BeautifulSoup(html, 'html.parser').get_text()
+
+        tag_str = ''
+        for tag in tags[index]:
+            tag_str = tag_str + tag + ' '
+
+        information = [link, gi_df.loc[index]['title'], gi_df.loc[index]['body'], gi_df.loc[index]['number'],
+                       state, clean_body, str(gi_df.loc[index]['comments']), tag_str]
+        result_gi.append(information)
+
+    return result_gi
+
+
+def girecommend_fromall(title, body, tags):
+    api = 'all'
     docs = get_raw_data(api)
     titles = get_title(api)
     tag_list = get_labels(api)
@@ -340,6 +417,40 @@ def recommend():
 
     result = girecommend(api, matched_so[0], matched_so[1],
                          matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
+    # for inf in result:
+    #     print(inf)
+
+    label_pre_link = settings.api_label_prelink[api]
+
+    return render_template('gi_results.html', u=result, img_processed_body=img_processed_body, title=title,
+                           acc_id=acc_id, so_id=id, score=score, view_count=view_count, answer_count=answer_count,
+                           comment_count=comment_count, tag_list=tag_list, tag_pre_link=label_pre_link)
+
+
+@app.route("/fromallrecommend")
+def fromallrecommend():
+    """
+    根据从前端传入的StackOverflow Id号，为其推荐相关的Github Issue
+    :return:
+    """
+    id = request.args.get("id")  # str形式的
+    print("当前要进行推荐的so_id: " + id)
+    matched_so = find_fromall(id)
+    # title,body,tags,AcceptedAnswerId, score, view_count, answer_count, comment_count, tag_list
+    img_processed_body = alter_pic_size(matched_so[1])
+    title = matched_so[0]
+    acc_id = matched_so[3]
+    score = matched_so[4]
+    view_count = matched_so[5]
+    answer_count = matched_so[6]
+    comment_count = matched_so[7]
+    tag_list = matched_so[8]
+    api = ''
+    for tag in tag_list:
+        if str(tag).lower()== 'textblob':
+            api = 'TextBlob'
+
+    result = girecommend(api, matched_so[0], matched_so[1], matched_so[2])  # link,title,body,number,state,clean_body,comments,tags
     # for inf in result:
     #     print(inf)
 

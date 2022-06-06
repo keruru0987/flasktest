@@ -22,7 +22,7 @@ github_filepath = {'gensim': 'data/issue/gensim.json', 'allennlp': 'data/issue/a
 new_github_filepath = {'gensim': 'data/new_issue/gensim.csv', 'allennlp': 'data/new_issue/allennlp.csv',
                        'nltk': 'data/new_issue/nltk.csv', 'spaCy': 'data/new_issue/spaCy.csv',
                        'stanford-nlp': 'data/new_issue/stanford-nlp.csv', 'TextBlob': 'data/new_issue/TextBlob.csv',
-                       'Transformers': 'data/new_issue/Transformers.csv'}
+                       'Transformers': 'data/new_issue/Transformers.csv', 'all': 'data/new_issue/allissue.csv'}
 
 tagged_github_filepath = {'gensim': 'data/tagged_data/gensim.csv', 'allennlp': 'data/tagged_data/allennlp.csv',
                           'nltk': 'data/tagged_data/nltk.csv', 'spaCy': 'data/tagged_data/spaCy.csv',
